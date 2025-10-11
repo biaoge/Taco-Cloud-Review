@@ -50,3 +50,18 @@ alter table Taco_Order_Tacos
     add foreign key (tacoOrder) references Taco_Order(id);
 alter table Taco_Order_Tacos
     add foreign key (taco) references Taco(id);
+
+-- create tables for user authentication and authorization with JDBC-based user store
+create table if not exists Users(
+    username varchar(50) not null primary key,
+    password varchar(500) not null,
+    enabled boolean not null
+);
+
+create table if not exists UserAuthorities (
+    username varchar(50) not null,
+    authority varchar(50) not null,
+    constraint fk_authorities_users foreign key(username) references Users(username)
+);
+
+create unique index if not exists ix_auth_username on UserAuthorities (username,authority);

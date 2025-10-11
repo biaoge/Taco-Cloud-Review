@@ -1,5 +1,6 @@
 package tacos.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +23,9 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "Taco_Order") // Specify the table name if it differs from the class name
-public class Order {
+public class Order implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

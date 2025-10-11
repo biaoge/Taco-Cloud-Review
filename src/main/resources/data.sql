@@ -14,3 +14,10 @@ insert into Ingredient (id, name, type) values ('CHED', 'Cheddar', 'CHEESE');
 insert into Ingredient (id, name, type) values ('JACK', 'Monterrey Jack', 'CHEESE');
 insert into Ingredient (id, name, type) values ('SLSA', 'Salsa', 'SAUCE');
 insert into Ingredient (id, name, type) values ('SRCR', 'Sour Cream', 'SAUCE');
+
+-- insert a test user for JDBC-based authentication
+insert into Users (username, password, enabled)
+values ('jdbc-user', 'password', true);
+
+insert into UserAuthorities (username, authority)
+values ('jdbc-user', 'ROLE_USER');
