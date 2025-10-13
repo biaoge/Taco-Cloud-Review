@@ -2,8 +2,11 @@ package tacos.security;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 /*
  * @EnableWebSecurity and extending the WebSecurityConfigurerAdapter class are deprecated in Spring Security 5.7.0-M2 and later. 
  * Spring boot 3.x (the version we are using) requires Spring-Security 6.x, so don't need to use these anymore.
@@ -47,8 +50,24 @@ public class SecurityConfig {
                         .roles("USER")
                         .build());
     }
-
     */
+
+    /*
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+        .inMemoryAuthentication()
+        .withUser("buzz")
+        .password("{noop}infinity")
+        .roles("USER")
+        .and()
+        .withUser("woody")
+        .password("{noop}bullseye")
+        .roles("USER");
+    }
+    */
+
+
 
     /*
      * 4.2.2 JDBC-based user store
@@ -59,6 +78,8 @@ public class SecurityConfig {
      *  - Database connection properties (spring.datasource.*) in  application.properties.
      * 2.  Based on these clues, Spring Boot's auto-configuration automatically creates and configures a DataSource bean and wires it to here.
      */
+    
+     /*
     @Bean
     public UserDetailsService jdbcUserDetailsService(DataSource dataSource) {
         JdbcUserDetailsManager users  = new JdbcUserDetailsManager(dataSource);
@@ -72,10 +93,46 @@ public class SecurityConfig {
 
         return users;
     }
+    */    
 
     // for testing purpose only, no encryption for passwords, just stroe it in plain text
+    /*
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
+    */
+
+    /*
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth, DataSource dataSource) throws Exception {
+        auth
+        .jdbcAuthentication()
+        .dataSource(dataSource)
+        .usersByUsernameQuery("select username, password, enabled from Users where username=?")
+        .authoritiesByUsernameQuery("select username, authority from UserAuthorities where username=?")
+        .passwordEncoder(NoOpPasswordEncoder.getInstance());
+    }
+    */
+
+
+    
+    // 4.2.3 LDAP-based user store
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+        .ldapAuthentication()
+        .userSearchBase("ou=people")
+        .userSearchFilter("(uid={0})")
+        .groupSearchBase("ou=groups")
+        .groupSearchFilter("(member={0})")
+        .passwordCompare()
+        .passwordEncoder(NoOpPasswordEncoder.getInstance())
+        .passwordAttribute("userPassword")
+        .and()
+        .contextSource()
+        .url("ldap://localhost:8389/dc=tacocloud,dc=com");
+        
+    }
+    
 }
