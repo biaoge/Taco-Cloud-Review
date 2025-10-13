@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import tacos.data.jpa.UserRepositoryJPA;
 /*
  * @EnableWebSecurity and extending the WebSecurityConfigurerAdapter class are deprecated in Spring Security 5.7.0-M2 and later. 
  * Spring boot 3.x (the version we are using) requires Spring-Security 6.x, so don't need to use these anymore.
@@ -17,6 +19,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
@@ -27,9 +30,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authz -> 
-                authz.anyRequest().authenticated()
-            )
-            .formLogin();
+                authz.requestMatchers("/design", "/orders").hasRole("USER") // ROLE_ will be automatically added to USER as perfix, so it is "ROLE_USER"
+                .requestMatchers("/", "/**").permitAll()
+            )   
+            .formLogin()
+            .loginPage("/login")
+            .and()
+            .logout()
+            .logoutSuccessUrl("/");
+
         return http.build();
     }
 
@@ -118,6 +127,7 @@ public class SecurityConfig {
 
     
     // 4.2.3 LDAP-based user store
+    /*
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -134,5 +144,14 @@ public class SecurityConfig {
         .url("ldap://localhost:8389/dc=tacocloud,dc=com");
         
     }
+    */
     
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth, PasswordEncoder encoder) throws Exception {
+        auth.userDetailsService(userDetailsService)
+        .passwordEncoder(encoder);
+    }
 }

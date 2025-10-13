@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         // this maps the root URL ("/") to the "home" view without needing a dedicated controller, this replace the HomeController
         registry.addViewController("/").setViewName("home");
+        registry.addViewController("/login");
     }
 
 }
