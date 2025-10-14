@@ -28,6 +28,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        /*
+         * Spring Security enables CSRF protection by default - This means all POST requests must include a valid CSRF token
+         */
         http
             .authorizeHttpRequests(authz -> 
                 authz.requestMatchers("/design", "/orders").hasRole("USER") // ROLE_ will be automatically added to USER as perfix, so it is "ROLE_USER"
@@ -37,7 +40,14 @@ public class SecurityConfig {
             .loginPage("/login")
             .and()
             .logout()
-            .logoutSuccessUrl("/");
+            .logoutSuccessUrl("/")
+            .and()
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/h2-console/**") // Disable CSRF for H2 console
+            )
+            .headers(headers -> headers
+                .frameOptions().disable() // Allow H2 console to be displayed in a frame
+            );
 
         return http.build();
     }
