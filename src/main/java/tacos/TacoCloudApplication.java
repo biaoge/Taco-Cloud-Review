@@ -4,10 +4,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import tacos.data.jpa.IngredientRepositoryJPA;
+import tacos.data.jpa.UserRepositoryJPA;
 import tacos.model.Ingredient;
 import tacos.model.Ingredient.Type;
+import tacos.model.User;
 
 // This annatation is a combination of @Configuration, @EnableAutoConfiguration, and @ComponentScan
 // With it, this class acts as the main configuration class for the Spring Boot application
@@ -36,7 +40,9 @@ public class TacoCloudApplication {
 	 * This approach is guaranteed to work because it uses your Spring Data JPA repository directly to save the data after the application context (and thus the database connection and schema) is fully set up
 	 */
 	@Bean
-	public CommandLineRunner dataLoader(IngredientRepositoryJPA repo) {
+	@Profile("!prod")
+	public CommandLineRunner dataLoader(IngredientRepositoryJPA repo,
+	UserRepositoryJPA userRepo, PasswordEncoder encoder) {
 		return new CommandLineRunner() {
 			@Override
 			public void run(String... args) throws Exception {
@@ -50,6 +56,10 @@ public class TacoCloudApplication {
 				repo.save(new Ingredient("JACK", "Monterrey Jack", Type.CHEESE));
 				repo.save(new Ingredient("SLSA", "Salsa", Type.SAUCE));
 				repo.save(new Ingredient("SRCR", "Sour Cream", Type.SAUCE));
+			
+				userRepo.save(new User("habuma", encoder.encode("password"),
+						"Craig Walls", "123 North Street", "Cross Roads", "TX",
+						"76227", "123-123-1234"));
 			}
 		};
 	}

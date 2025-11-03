@@ -1,8 +1,12 @@
 package tacos.data.jpa;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import tacos.model.Order;
+import tacos.model.User;
 
 public interface OrderRepositoryJPA extends CrudRepository<Order, Long> {
     /**
@@ -25,4 +29,6 @@ public interface OrderRepositoryJPA extends CrudRepository<Order, Long> {
      * ```
      * 
      */
+
+    List<Order> findByUserOrderByPlacedAtDesc(User user, Pageable pageable);
 }

@@ -27,11 +27,10 @@ public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.AUTO)
-    // private Long id;
-
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     private final String username;
     private final String password;
     private final String fullname;
