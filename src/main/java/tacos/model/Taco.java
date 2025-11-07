@@ -3,6 +3,8 @@ package tacos.model;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.rest.core.annotation.RestResource;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,6 +42,7 @@ Because these fields are final, @RequiredArgsConstructor would generate a constr
 
  */
 // Here, the data will be persisted in the "Taco" table
+@RestResource(rel="tacos", path="tacos") // This annotation is used to customize the REST resource for the Taco entity. Tells Spring Data REST to expose the Taco entity as a REST resource with the rel "tacos" and the path "tacos".
 public class Taco {
 
     @Id
