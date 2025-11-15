@@ -1,0 +1,1 @@
+Here we use Apache ActiveMQ Artemis broker, which is reimplementation of ActiveMQ. ActiveMQ and Artemis technically are implmentations of JMS (They are JMS-compliant message brokers, i.e. they implement the JMS specification)

@@ -1,0 +1,15 @@
+### General configuration with YAML file. Note, Spring can have both application.properties and application.yml files in one project at the same time.
+
+# The values given here are actually the default values. But they are explicitly
+# set here as an example of setting the Artemis properties.
+spring:
+  jms:
+    template:
+      default-destination: tacocloud.order.queue
+  artemis:
+    broker-url: tcp://localhost:61616
+    username: tacoweb
+    password: atremispwd
+    embedded:
+      enabled: false
+    
